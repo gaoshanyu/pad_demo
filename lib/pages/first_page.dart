@@ -17,23 +17,7 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-        initialRoute: 'first/list',
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case 'first/list':
-              return MaterialPageRoute<void>(builder: (BuildContext context) => _buildPage(context), settings: settings);
-            case 'first/details':
-              return PageTransition(
-                child: DetailsPage(id: _selectedItem + 1, background: Colors.blue),
-                type: PageTransitionType.rightToLeft,
-                duration: const Duration(milliseconds: 200),
-                settings: settings,
-              );
-            default:
-              throw Exception('Invalid route: ${settings.name}');
-          }
-        });
+    return _buildPage(context);
   }
 
   Scaffold _buildPage(BuildContext context) {
@@ -85,7 +69,10 @@ class _FirstPageState extends State<FirstPage> {
                     _selectedItem = index;
                   });
                   if (!isDesktopLayout(context)) {
-                    Navigator.of(context).pushNamed('first/details');
+                    Navigator.push(
+                      context,
+                      PageTransition(child: DetailsPage(id: _selectedItem + 1, background: Colors.blue), type: PageTransitionType.rightToLeft, duration: const Duration(milliseconds: 200)),
+                    );
                   }
                 },
               )),
