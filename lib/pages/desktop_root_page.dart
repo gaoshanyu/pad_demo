@@ -29,6 +29,8 @@ class _DesktopRootPageState extends State<DesktopRootPage> {
     return Consumer<RootStore>(builder: (context, store, child) {
       return Scaffold(
         body: SafeArea(
+          top: false,
+          bottom: false,
           child: Row(
             children: [
               SizedBox(

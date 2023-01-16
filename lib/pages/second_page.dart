@@ -17,6 +17,10 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
+    return isDesktopLayout(context) ? _buildPadNavigator() : _buildPage(context);
+  }
+
+  Navigator _buildPadNavigator() {
     return Navigator(
       initialRoute: 'second/list',
       onGenerateRoute: (RouteSettings settings) {
@@ -71,7 +75,14 @@ class _SecondPageState extends State<SecondPage> {
                 ),
                 onTap: () {
                   _selectedItem = index;
-                  Navigator.pushNamed(context, 'second/details');
+                  if (isDesktopLayout(context)) {
+                    Navigator.pushNamed(context, 'second/details');
+                    return;
+                  }
+                  Navigator.push(
+                    context,
+                    PageTransition(child: DetailsPage(id: _selectedItem + 1, background: Colors.green), type: PageTransitionType.rightToLeft, duration: const Duration(milliseconds: 200)),
+                  );
                 },
               )),
     );
