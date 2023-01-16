@@ -26,34 +26,33 @@ class _SecondPageState extends State<SecondPage> {
                       GlobalKeys.rootScaffoldKey.currentState?.openDrawer();
                     }),
               ),
-        body: Row(children: [_buildLeftView(), _buildDetailsView()]));
+        body: isDesktopLayout(context) ? _buildPadView() : _buildPageBody());
   }
 
-  Widget _buildDetailsView() {
-    return Container();
-  }
-
-  Widget _buildLeftView() {
-    return Expanded(
-      child: Scaffold(
+  Widget _buildPadView() {
+    return Scaffold(
         appBar: AppBar(title: const Text('Second Page Title')),
-        body: Center(
+        body: _buildPageBody(),
+      );
+  }
+
+  Widget _buildPageBody() {
+    return Center(
           child: ListView.separated(
               itemCount: numItems,
               separatorBuilder: (context, index) => const Divider(height: .5, indent: 12.0, endIndent: 12.0, color: Color(0xFFDDDDDD)),
               itemBuilder: (context, index) => ListTile(
-                    leading: const Icon(Icons.start),
-                    title: Text(
-                      'Second Item ${index + 1} on Second Page',
-                    ),
-                    onTap: () {
-                      setState(() {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index, background: Colors.green.withOpacity((100 - index * 3) / 100))));
-                      });
-                    },
-                  )),
-        ),
-      ),
-    );
+                leading: const Icon(Icons.start),
+                title: Text(
+                  'Second Item ${index + 1} on Second Page',
+                ),
+                onTap: () {
+                  setState(() {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index + 1, background: Colors.green.withOpacity((100 - index * 3) / 100))));
+                  });
+                },
+              )),
+        );
   }
+
 }

@@ -27,10 +27,10 @@ class _FirstPageState extends State<FirstPage> {
                       GlobalKeys.rootScaffoldKey.currentState?.openDrawer();
                     }),
               ),
-        body: Row(children: [_buildLeftView(), _buildDetailsView()]));
+        body: isDesktopLayout(context) ? Row(children: [_buildDesktopLeftView(), _buildDesktopDetailsView()]) : _buildFirstPageBody());
   }
 
-  Widget _buildDetailsView() {
+  Widget _buildDesktopDetailsView() {
     return Expanded(
         child: DetailsPage(
       id: _selectedItem + 1,
@@ -38,30 +38,36 @@ class _FirstPageState extends State<FirstPage> {
     ));
   }
 
-  Widget _buildLeftView() {
+  Widget _buildDesktopLeftView() {
     return SizedBox(
         width: MediaQuery.of(context).size.width * 0.3,
         child: Scaffold(
           appBar: AppBar(title: const Text('First Page Title')),
-          body: Center(
-            child: ListView.separated(
-                itemCount: numItems,
-                separatorBuilder: (context, index) => const Divider(height: .5, indent: 12.0, endIndent: 12.0, color: Color(0xFFDDDDDD)),
-                itemBuilder: (context, index) => ListTile(
-                      // enabled: true,
-                      selected: index == _selectedItem,
-                      leading: const Icon(Icons.favorite),
-                      title: Text(
-                        'Item ${index + 1}',
-                      ),
-                      onTap: () {
-                        setState(() {
-                          _selectedItem = index;
-                          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DetailsPage(contentString: 'Push from first page')));
-                        });
-                      },
-                    )),
-          ),
+          body: _buildFirstPageBody(),
         ));
+  }
+
+  Widget _buildFirstPageBody() {
+    return Center(
+      child: ListView.separated(
+          itemCount: numItems,
+          separatorBuilder: (context, index) => const Divider(height: .5, indent: 12.0, endIndent: 12.0, color: Color(0xFFDDDDDD)),
+          itemBuilder: (context, index) => ListTile(
+                // enabled: true,
+                selected: index == _selectedItem,
+                leading: const Icon(Icons.favorite),
+                title: Text(
+                  'Item ${index + 1}',
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedItem = index;
+                  });
+                  if (!isDesktopLayout(context)) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100))));
+                  }
+                },
+              )),
+    );
   }
 }

@@ -14,7 +14,6 @@ class DetailsPage extends StatelessWidget {
     } else if (id % 2 == 0) {
       content += ": it's come from special item";
     }
-    return Scaffold(
-        appBar: AppBar(title: Text('Page $id')), backgroundColor: background, body: Center(child: Text('Details Page Body: $content')));
+    return Scaffold(appBar: AppBar(title: Text('Page $id')), backgroundColor: background, body: Center(child: Container(margin: const EdgeInsets.all(30), child: Text('Details Page Body: $content'))));
   }
 }
