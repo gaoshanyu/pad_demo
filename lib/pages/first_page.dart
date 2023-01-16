@@ -3,6 +3,8 @@ import 'package:pad_demo/adaptive.dart';
 import 'package:pad_demo/global_keys.dart';
 import 'package:pad_demo/pages/details_page.dart';
 
+import '../fade_through_transition_switcher.dart';
+
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
 
@@ -64,7 +66,15 @@ class _FirstPageState extends State<FirstPage> {
                     _selectedItem = index;
                   });
                   if (!isDesktopLayout(context)) {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100))));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FadeThroughTransitionSwitcher(
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                          child: DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100)),
+                        ),
+                      ),
+                    );
+                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100))));
                   }
                 },
               )),
