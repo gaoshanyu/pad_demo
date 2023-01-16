@@ -3,41 +3,64 @@ import 'package:pad_demo/adaptive.dart';
 import 'package:pad_demo/global_keys.dart';
 import 'package:pad_demo/pages/details_page.dart';
 
-class FirstPage extends StatelessWidget {
+class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  static const numItems = 9;
+  int _selectedItem = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('First Page Title'),
-          leading: isDesktopLayout(context)
-              ? null
-              : InkWell(
-                  child: const Icon(Icons.menu),
-                  onTap: () {
-                    GlobalKeys.rootScaffoldKey.currentState?.openDrawer();
-                  },
-                ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('First Page Body'),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DetailsPage(contentString: 'Push from first page')));
-                },
-                child: Container(
-                  width: 160,
-                  height: 40,
-                  margin: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-                  child: const Center(child: Text('Action Button', style: TextStyle(color: Colors.white))),
-                ),
-              )
-            ],
+        appBar: isDesktopLayout(context)
+            ? null
+            : AppBar(
+                title: const Text('First Page Title'),
+                leading: InkWell(
+                    child: const Icon(Icons.menu),
+                    onTap: () {
+                      GlobalKeys.rootScaffoldKey.currentState?.openDrawer();
+                    }),
+              ),
+        body: Row(children: [_buildLeftView(), _buildDetailsView()]));
+  }
+
+  Widget _buildDetailsView() {
+    return Expanded(
+        child: DetailsPage(
+      id: _selectedItem + 1,
+      background: Colors.blue.withOpacity((100 - _selectedItem * 2) / 100),
+    ));
+  }
+
+  Widget _buildLeftView() {
+    return SizedBox(
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: Scaffold(
+          appBar: AppBar(title: const Text('First Page Title')),
+          body: Center(
+            child: ListView.separated(
+                itemCount: numItems,
+                separatorBuilder: (context, index) => const Divider(height: .5, indent: 12.0, endIndent: 12.0, color: Color(0xFFDDDDDD)),
+                itemBuilder: (context, index) => ListTile(
+                      // enabled: true,
+                      selected: index == _selectedItem,
+                      leading: const Icon(Icons.favorite),
+                      title: Text(
+                        'Item ${index + 1}',
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _selectedItem = index;
+                          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DetailsPage(contentString: 'Push from first page')));
+                        });
+                      },
+                    )),
           ),
         ));
   }
