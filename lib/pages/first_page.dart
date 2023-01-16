@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pad_demo/adaptive.dart';
 import 'package:pad_demo/global_keys.dart';
 import 'package:pad_demo/pages/details_page.dart';
-
-import '../fade_through_transition_switcher.dart';
+import 'package:page_transition/page_transition.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -18,6 +17,26 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
+    return Navigator(
+        initialRoute: 'first/list',
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case 'first/list':
+              return MaterialPageRoute<void>(builder: (BuildContext context) => _buildPage(context), settings: settings);
+            case 'first/details':
+              return PageTransition(
+                child: DetailsPage(id: _selectedItem + 1, background: Colors.blue),
+                type: PageTransitionType.rightToLeft,
+                duration: const Duration(milliseconds: 200),
+                settings: settings,
+              );
+            default:
+              throw Exception('Invalid route: ${settings.name}');
+          }
+        });
+  }
+
+  Scaffold _buildPage(BuildContext context) {
     return Scaffold(
         appBar: isDesktopLayout(context)
             ? null
@@ -66,15 +85,7 @@ class _FirstPageState extends State<FirstPage> {
                     _selectedItem = index;
                   });
                   if (!isDesktopLayout(context)) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FadeThroughTransitionSwitcher(
-                          fillColor: Theme.of(context).scaffoldBackgroundColor,
-                          child: DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100)),
-                        ),
-                      ),
-                    );
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailsPage(id: index + 1, background: Colors.blue.withOpacity((100 - index * 3) / 100))));
+                    Navigator.of(context).pushNamed('first/details');
                   }
                 },
               )),

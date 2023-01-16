@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pad_demo/adaptive.dart';
 import 'package:pad_demo/global_keys.dart';
 import 'package:pad_demo/pages/details_page.dart';
-
-import '../fade_through_transition_switcher.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SecondPage extends StatefulWidget {
   const SecondPage({super.key});
@@ -21,21 +20,19 @@ class _SecondPageState extends State<SecondPage> {
     return Navigator(
       initialRoute: 'second/list',
       onGenerateRoute: (RouteSettings settings) {
-        WidgetBuilder builder;
         switch (settings.name) {
           case 'second/list':
-            builder = (BuildContext context) => _buildPage(context);
-            break;
+            return MaterialPageRoute<void>(builder: (BuildContext context) => _buildPage(context), settings: settings);
           case 'second/details':
-            builder = (BuildContext _) => FadeThroughTransitionSwitcher(
-                  fillColor: Theme.of(context).scaffoldBackgroundColor,
-                  child: DetailsPage(id: _selectedItem + 1, background: Colors.green.withOpacity((100 - _selectedItem * 3) / 100)),
-                );
-            break;
+            return PageTransition(
+              child: DetailsPage(id: _selectedItem + 1, background: Colors.green),
+              type: PageTransitionType.rightToLeft,
+              duration: const Duration(milliseconds: 200),
+              settings: settings,
+            );
           default:
             throw Exception('Invalid route: ${settings.name}');
         }
-        return MaterialPageRoute<void>(builder: builder, settings: settings);
       },
     );
   }
@@ -74,7 +71,7 @@ class _SecondPageState extends State<SecondPage> {
                 ),
                 onTap: () {
                   _selectedItem = index;
-                  Navigator.of(context).pushNamed('second/details');
+                  Navigator.pushNamed(context, 'second/details');
                 },
               )),
     );
